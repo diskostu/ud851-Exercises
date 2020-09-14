@@ -17,8 +17,8 @@ package com.example.android.explicitintent;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View v) {
-                // TODO (1) Retrieve the text from the EditText and store it in a variable
+                // DONE (1) Retrieve the text from the EditText and store it in a variable
+                final String enteredText = mNameEntry.getText().toString();
 
                 /*
                  * Storing the Context in a variable in this case is redundant since we could have
@@ -73,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                  */
                 Intent startChildActivityIntent = new Intent(context, destinationActivity);
 
-                // TODO (2) Use the putExtra method to put the String from the EditText in the Intent
+                // DONE (2) Use the putExtra method to put the String from the EditText in the Intent
+                startChildActivityIntent.putExtra("text", enteredText);
 
                 /*
                  * Once the Intent has been created, we can use Activity's method, "startActivity"
