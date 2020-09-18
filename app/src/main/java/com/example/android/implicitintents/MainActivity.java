@@ -48,12 +48,17 @@ public class MainActivity extends AppCompatActivity {
      * @param v Button that was clicked.
      */
     public void onClickOpenAddressButton(View v) {
-        // TODO (5) Store an address in a String
+        // DONE (5) Store an address in a String
+        final String address = "Ottobrunn";
+        // DONE (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
+        final Uri geoLocation = new Uri.Builder()
+                .scheme("geo")
+                .appendPath("0,0")
+                .appendQueryParameter("q", address)
+                .build();
 
-        // TODO (6) Use Uri.Builder with the appropriate scheme and query to form the Uri for the address
-
-        // TODO (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
-        Toast.makeText(this, "TODO: Open a map when this button is clicked", Toast.LENGTH_SHORT).show();
+        // DONE (7) Replace the Toast with a call to showMap, passing in the Uri from the previous step
+        showMap(geoLocation);
     }
 
     /**
@@ -71,15 +76,14 @@ public class MainActivity extends AppCompatActivity {
      * similar to what I've done above. You can view a list of implicit Intents on the Common
      * Intents page from the developer documentation.
      *
-     * @see <http://developer.android.com/guide/components/intents-common.html/>
-     *
      * @param v Button that was clicked.
+     * @see <http://developer.android.com/guide/components/intents-common.html/>
      */
     public void createYourOwn(View v) {
         Toast.makeText(this,
-                "TODO: Create Your Own Implicit Intent",
-                Toast.LENGTH_SHORT)
-                .show();
+                       "TODO: Create Your Own Implicit Intent",
+                       Toast.LENGTH_SHORT)
+             .show();
     }
 
     /**
@@ -112,13 +116,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // TODO (1) Create a method called showMap with a Uri as the single parameter
-    // Do steps 2 - 4 within the showMap method
-        // TODO (2) Create an Intent with action type, Intent.ACTION_VIEW
+    // DONE (1) Create a method called showMap with a Uri as the single parameter
+    // DONE (2) Create an Intent with action type, Intent.ACTION_VIEW
+    // DONE (3) Set the data of the Intent to the Uri passed into this method
+    // DONE (4) Verify that this Intent can be launched and then call startActivity
+    private void showMap(final Uri uri) {
+        safeStartActivity(new Intent(Intent.ACTION_VIEW, uri));
+    }
 
-        // TODO (3) Set the data of the Intent to the Uri passed into this method
 
-        // TODO (4) Verify that this Intent can be launched and then call startActivity
-
-
+    private void safeStartActivity(final Intent intent) {
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 }
