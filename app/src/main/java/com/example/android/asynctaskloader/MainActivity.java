@@ -109,13 +109,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         final Bundle queryBundle = new Bundle();
 
         // DONE (20) Use putString with SEARCH_QUERY_URL_EXTRA as the key and the String value of the URL as the value
-        queryBundle.putString(SEARCH_QUERY_URL_EXTRA, githubQuery);
+        queryBundle.putString(SEARCH_QUERY_URL_EXTRA, githubSearchUrl.toString());
 
         // DONE (21) Call getSupportLoaderManager and store it in a LoaderManager variable
         final LoaderManager loaderManager = LoaderManager.getInstance(this);
 
         // DONE (22) Get our Loader by calling getLoader and passing the ID we specified
-        final Loader<Object> loader = loaderManager.getLoader(GITHUB_SEARCH_LOADER);
+        final Loader<String> loader = loaderManager.getLoader(GITHUB_SEARCH_LOADER);
 
         // DONE (23) If the Loader was null, initialize it. Else, restart it.
         if (loader == null) {
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 mLoadingIndicator.setVisibility(View.VISIBLE);
 
                 // DONE (8) Force a load
-                makeGithubSearchQuery();
+                forceLoad();
             }
         };
     }
