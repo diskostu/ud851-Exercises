@@ -16,11 +16,13 @@
 package com.example.android.asynctaskloader;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -165,7 +167,8 @@ public class MainActivity extends AppCompatActivity implements
     public Loader<String> onCreateLoader(int id, final Bundle args) {
         return new AsyncTaskLoader<String>(this) {
 
-            // TODO (1) Create a String member variable called mGithubJson that will store the raw JSON
+            // DONE (1) Create a String member variable called mGithubJson that will store the raw JSON
+            String mGithubJson;
 
             @Override
             protected void onStartLoading() {
@@ -175,7 +178,14 @@ public class MainActivity extends AppCompatActivity implements
                     return;
                 }
 
-                // TODO (2) If mGithubJson is not null, deliver that result. Otherwise, force a load
+                // DONE (2) If mGithubJson is not null, deliver that result. Otherwise, force a load
+                if (mGithubJson != null) {
+                    Log.d("MainActivity", "Cache is used.");
+                    deliverResult(mGithubJson);
+                    return;
+                }
+
+                Log.d("MainActivity", "No cache available, doing a full load.");
 
                 /*
                  * When we initially begin loading in the background, we want to display the
@@ -208,8 +218,13 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
 
-            // TODO (3) Override deliverResult and store the data in mGithubJson
-            // TODO (4) Call super.deliverResult after storing the data
+            // DONE (3) Override deliverResult and store the data in mGithubJson
+            // DONE (4) Call super.deliverResult after storing the data
+            @Override
+            public void deliverResult(@Nullable String data) {
+                mGithubJson = data;
+                super.deliverResult(data);
+            }
         };
     }
 
