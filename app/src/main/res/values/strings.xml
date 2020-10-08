@@ -15,4 +15,6 @@
 
     <!-- Value in SharedPreferences for green color option -->
     <string name="pref_color_green_value" translatable="false">green</string>
+
+    <string name="prefkey_bass">prefkey_bass</string>
 </resources>

@@ -18,6 +18,7 @@ package android.example.com.visualizerpreferences;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.example.com.visualizerpreferences.AudioVisuals.AudioInputReader;
 import android.example.com.visualizerpreferences.AudioVisuals.VisualizerView;
@@ -26,6 +27,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,16 +43,21 @@ public class VisualizerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_visualizer);
-        mVisualizerView = (VisualizerView) findViewById(R.id.activity_visualizer);
-        defaultSetup();
+        mVisualizerView = findViewById(R.id.activity_visualizer);
+        setupSharedPreferences();
         setupPermissions();
     }
 
-    // TODO (1) Change the name of default setup to setupSharedPreferences
-    private void defaultSetup() {
-        // TODO (2) Get a reference to the default shared preferences from the PreferenceManager class
-        // TODO (3) Get the value of the show_bass checkbox preference and use it to call setShowBass
-        mVisualizerView.setShowBass(true);
+    // DONE (1) Change the name of default setup to setupSharedPreferences
+    private void setupSharedPreferences() {
+        // DONE (2) Get a reference to the default shared preferences from the PreferenceManager class
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final boolean isShowBass = preferences.getBoolean("show_bass", true);
+
+        // DONE (3) Get the value of the show_bass checkbox preference and use it to call setShowBass
+        // this code is only run when onCreate() is called, which is not fine, because changed preferences will not
+        // update the visuals. We will fix this in a later lesson.
+        mVisualizerView.setShowBass(isShowBass);
         mVisualizerView.setShowMid(true);
         mVisualizerView.setShowTreble(true);
         mVisualizerView.setMinSizeScale(1);
@@ -104,17 +111,18 @@ public class VisualizerActivity extends AppCompatActivity {
             mAudioInputReader.restart();
         }
     }
-    
+
     /**
      * App Permissions for Audio
      **/
     private void setupPermissions() {
         // If we don't have the record audio permission...
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat
+                .checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             // And if we're on SDK M or later...
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Ask again, nicely, for the permissions.
-                String[] permissionsWeNeed = new String[]{ Manifest.permission.RECORD_AUDIO };
+                String[] permissionsWeNeed = new String[]{Manifest.permission.RECORD_AUDIO};
                 requestPermissions(permissionsWeNeed, MY_PERMISSION_RECORD_AUDIO_REQUEST_CODE);
             }
         } else {
@@ -135,7 +143,8 @@ public class VisualizerActivity extends AppCompatActivity {
                     mAudioInputReader = new AudioInputReader(mVisualizerView, this);
 
                 } else {
-                    Toast.makeText(this, "Permission for audio not granted. Visualizer can't run.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Permission for audio not granted. Visualizer can't run.", Toast.LENGTH_LONG)
+                            .show();
                     finish();
                     // The permission was denied, so we can show a message why we can't run the app
                     // and then close the app.
