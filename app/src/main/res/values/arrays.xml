@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pref_entries_video_quality">
+        <item>text_string_1</item>
+        <item>text_string_2</item>
+    </string-array>
+</resources>
