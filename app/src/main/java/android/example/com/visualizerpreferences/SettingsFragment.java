@@ -25,7 +25,6 @@ import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
-import android.widget.Toast;
 
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
@@ -76,12 +75,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         // TODO (3) Don't forget to add code here to properly set the summary for an EditTextPreference
         if (preference instanceof ListPreference) {
             // For list preferences, figure out the label of the selected value
-            ListPreference listPreference = (ListPreference) preference;
-            int prefIndex = listPreference.findIndexOfValue(value);
+            final ListPreference pref = (ListPreference) preference;
+            int prefIndex = pref.findIndexOfValue(value);
             if (prefIndex >= 0) {
                 // Set the summary to that label
-                listPreference.setSummary(listPreference.getEntries()[prefIndex]);
+                pref.setSummary(pref.getEntries()[prefIndex]);
             }
+        } else if (preference instanceof EditTextPreference) {
+            final EditTextPreference pref = (EditTextPreference) preference;
+            pref.setSummary(pref.getText());
         }
     }
     

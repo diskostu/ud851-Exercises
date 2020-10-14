@@ -2,6 +2,9 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="Show or hide stuff" />
+
+
     <CheckBoxPreference
         android:defaultValue="@bool/pref_show_bass_default"
         android:key="@string/pref_show_bass_key"
@@ -23,8 +26,16 @@
         android:summaryOn="@string/pref_show_true"
         android:title="@string/pref_show_treble_label" />
 
-    <!-- TODO (1) Add and EditTextPreference with all of the appropriate strings stored in strings.xml.
+    <PreferenceCategory android:title="Sizes" />
+
+    <!-- DONE (1) Add an EditTextPreference with all of the appropriate strings stored in strings.xml.
         It should have a key, default value of 1 and title -->
+    <EditTextPreference
+        android:defaultValue="@string/pref_size_default"
+        android:key="@string/pref_size_key"
+        android:title="@string/pref_size_label" />
+
+    <PreferenceCategory android:title="Colors" />
 
     <ListPreference
         android:defaultValue="@string/pref_color_red_value"
