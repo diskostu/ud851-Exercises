@@ -27,9 +27,9 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceScreen;
 import android.widget.Toast;
 
-// TODO (1) Implement OnPreferenceChangeListener
+// DONE (1) Implement OnPreferenceChangeListener
 public class SettingsFragment extends PreferenceFragmentCompat implements
-        OnSharedPreferenceChangeListener {
+        OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -51,7 +51,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                 setPreferenceSummary(p, value);
             }
         }
-        // TODO (3) Add the OnPreferenceChangeListener specifically to the EditTextPreference
+
+        // DONE (3) Add the OnPreferenceChangeListener specifically to the EditTextPreference
+        findPreference(getString(R.string.pref_size_key)).setOnPreferenceChangeListener(this);
     }
 
     @Override
@@ -65,6 +67,33 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                 setPreferenceSummary(preference, value);
             }
         }
+    }
+
+
+    // DONE (2) Override onPreferenceChange. This method should try to convert the new preference value
+    //   to a float; if it cannot, show a helpful error message and return false. If it can be converted
+    //   to a float check that that float is between 0 (exclusive) and 3 (inclusive). If it isn't, show
+    //   an error message and return false. If it is a valid number, return true.
+    @Override
+    public boolean onPreferenceChange(Preference preference, Object objectValue) {
+        if (preference.getKey().equals(getString(R.string.pref_size_key))) {
+            final String value = String.valueOf(objectValue);
+            try {
+                final float floatValue = Float.parseFloat(value);
+                if (floatValue >= 0.0f && floatValue <= 3.0f) {
+                    Toast.makeText(getContext(), "value is fine: " + value, Toast.LENGTH_SHORT).show();
+                    return true;
+                } else {
+                    Toast.makeText(getContext(), "Value has to be between 0 and 3: " + floatValue, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            } catch (Exception exception) {
+                Toast.makeText(getContext(), "Non-numeric value: " + value, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -88,22 +117,15 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         }
     }
 
-    // TODO (2) Override onPreferenceChange. This method should try to convert the new preference value
-    // to a float; if it cannot, show a helpful error message and return false. If it can be converted
-    // to a float check that that float is between 0 (exclusive) and 3 (inclusive). If it isn't, show
-    // an error message and return false. If it is a valid number, return true.
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
+        getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
     }
 }
