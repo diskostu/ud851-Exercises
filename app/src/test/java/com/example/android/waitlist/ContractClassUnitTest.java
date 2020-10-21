@@ -23,13 +23,13 @@ import static org.junit.Assert.assertTrue;
 public class ContractClassUnitTest {
 
     @Test
-    public void inner_class_exists() throws Exception {
+    public void inner_class_exists() {
         Class[] innerClasses = WaitlistContract.class.getDeclaredClasses();
         assertEquals("There should be 1 Inner class inside the contract class", 1, innerClasses.length);
     }
 
     @Test
-    public void inner_class_type_correct() throws Exception {
+    public void inner_class_type_correct() {
         Class[] innerClasses = WaitlistContract.class.getDeclaredClasses();
         assertEquals("Cannot find inner class to complete unit test", 1, innerClasses.length);
         Class entryClass = innerClasses[0];
@@ -39,7 +39,7 @@ public class ContractClassUnitTest {
     }
 
     @Test
-    public void inner_class_members_correct() throws Exception {
+    public void inner_class_members_correct() {
         Class[] innerClasses = WaitlistContract.class.getDeclaredClasses();
         assertEquals("Cannot find inner class to complete unit test", 1, innerClasses.length);
         Class entryClass = innerClasses[0];
