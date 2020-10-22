@@ -74,13 +74,14 @@ public class MainActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 // DONE (8) Inside, get the viewHolder's itemView's tag and store in a long variable id
                 final long tag = (long) viewHolder.itemView.getTag();
-                Toast.makeText(MainActivity.this, "onSwiped tag: " + tag, Toast.LENGTH_SHORT).show();
 
                 // DONE (9) call removeGuest and pass through that id
                 removeGuest(tag);
 
                 // DONE (10) call swapCursor on mAdapter passing in getAllGuests() as the argument
                 mAdapter.swapCursor(getAllGuests());
+
+                Toast.makeText(MainActivity.this, "Guest removed.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -109,8 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Add guest info to mDb
         final long rowIndex = addNewGuest(mNewGuestNameEditText.getText().toString(), partySize);
-
-        Toast.makeText(this, "new row index: " + rowIndex, Toast.LENGTH_SHORT).show();
 
         // Update the cursor in the adapter to trigger UI to display the new list
         mAdapter.swapCursor(getAllGuests());
