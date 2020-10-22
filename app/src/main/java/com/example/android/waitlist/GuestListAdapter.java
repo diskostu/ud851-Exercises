@@ -39,18 +39,20 @@ public class GuestListAdapter extends RecyclerView.Adapter<GuestListAdapter.Gues
     public void onBindViewHolder(GuestViewHolder holder, int position) {
         // Move the mCursor to the position of the item to be displayed
         if (!mCursor.moveToPosition(position))
-            return; // bail if returned null
+            return; // fail if returned null
 
         // Update the view holder with the information needed to display
         String name = mCursor.getString(mCursor.getColumnIndex(WaitlistContract.WaitlistEntry.COLUMN_GUEST_NAME));
         int partySize = mCursor.getInt(mCursor.getColumnIndex(WaitlistContract.WaitlistEntry.COLUMN_PARTY_SIZE));
-        // TODO (6) Retrieve the id from the cursor and
 
-        // Display the guest name
         holder.nameTextView.setText(name);
         // Display the party count
         holder.partySizeTextView.setText(String.valueOf(partySize));
-        // TODO (7) Set the tag of the itemview in the holder to the id
+
+        // DONE (6) Retrieve the id from the cursor and display the guest name
+        final long id = mCursor.getLong(mCursor.getColumnIndex(WaitlistContract.WaitlistEntry._ID));
+        // DONE (7) Set the tag of the itemview in the holder to the id
+        holder.itemView.setTag(id);
     }
 
 
