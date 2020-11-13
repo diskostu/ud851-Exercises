@@ -1,38 +1,37 @@
 /*
-* Copyright (C) 2016 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.android.todolist.data;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-
-import com.example.android.todolist.data.TaskContentProvider;
-import com.example.android.todolist.data.TaskContract;
-import com.example.android.todolist.data.TaskDbHelper;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
@@ -95,19 +94,19 @@ public class TestTaskContentProvider {
             /* The ProviderInfo will contain the authority, which is what we want to test */
             ProviderInfo providerInfo = pm.getProviderInfo(componentName, 0);
             String actualAuthority = providerInfo.authority;
-            String expectedAuthority = packageName;
+            final boolean exported = providerInfo.exported;
 
             /* Make sure that the registered authority matches the authority from the Contract */
             String incorrectAuthority =
                     "Error: TaskContentProvider registered with authority: " + actualAuthority +
-                            " instead of expected authority: " + expectedAuthority;
-            assertEquals(incorrectAuthority,
-                    actualAuthority,
-                    expectedAuthority);
+                            " instead of expected authority: " + packageName;
+            assertEquals(incorrectAuthority, packageName, actualAuthority);
 
+            String incorrectExportedValue = "Error: expected false for the exported property";
+            assertFalse(incorrectExportedValue, exported);
         } catch (PackageManager.NameNotFoundException e) {
             String providerNotRegisteredAtAll =
-                    "Error: TaskContentProvider not registered at " + mContext.getPackageName();
+                    "Error: TaskContentProvider not registered at " + packageName;
             /*
              * This exception is thrown if the ContentProvider hasn't been registered with the
              * manifest at all. If this is the case, you need to double check your
@@ -123,39 +122,33 @@ public class TestTaskContentProvider {
     //================================================================================
 
 
-//    private static final Uri TEST_TASKS = TaskContract.TaskEntry.CONTENT_URI;
-//    // Content URI for a single task with id = 1
-//    private static final Uri TEST_TASK_WITH_ID = TEST_TASKS.buildUpon().appendPath("1").build();
-//
-//
-//    /**
-//     * This function tests that the UriMatcher returns the correct integer value for
-//     * each of the Uri types that the ContentProvider can handle. Uncomment this when you are
-//     * ready to test your UriMatcher.
-//     */
-//    @Test
-//    public void testUriMatcher() {
-//
-//        /* Create a URI matcher that the TaskContentProvider uses */
-//        UriMatcher testMatcher = TaskContentProvider.buildUriMatcher();
-//
-//        /* Test that the code returned from our matcher matches the expected TASKS int */
-//        String tasksUriDoesNotMatch = "Error: The TASKS URI was matched incorrectly.";
-//        int actualTasksMatchCode = testMatcher.match(TEST_TASKS);
-//        int expectedTasksMatchCode = TaskContentProvider.TASKS;
-//        assertEquals(tasksUriDoesNotMatch,
-//                actualTasksMatchCode,
-//                expectedTasksMatchCode);
-//
-//        /* Test that the code returned from our matcher matches the expected TASK_WITH_ID */
-//        String taskWithIdDoesNotMatch =
-//                "Error: The TASK_WITH_ID URI was matched incorrectly.";
-//        int actualTaskWithIdCode = testMatcher.match(TEST_TASK_WITH_ID);
-//        int expectedTaskWithIdCode = TaskContentProvider.TASK_WITH_ID;
-//        assertEquals(taskWithIdDoesNotMatch,
-//                actualTaskWithIdCode,
-//                expectedTaskWithIdCode);
-//    }
+    /**
+     * This function tests that the UriMatcher returns the correct integer value for
+     * each of the Uri types that the ContentProvider can handle. Uncomment this when you are
+     * ready to test your UriMatcher.
+     */
+    @Test
+    public void testUriMatcher() {
+        final Uri TEST_TASKS = TaskContract.TaskEntry.CONTENT_URI;
+        // Content URI for a single task with id = 1
+        final Uri TEST_TASK_WITH_ID = TEST_TASKS.buildUpon().appendPath("1").build();
+
+        /* Create a URI matcher that the TaskContentProvider uses */
+        UriMatcher testMatcher = TaskContentProvider.buildUriMatcher();
+
+        /* Test that the code returned from our matcher matches the expected TASKS int */
+        String tasksUriDoesNotMatch = "Error: The TASKS URI was matched incorrectly.";
+        int actualTasksMatchCode = testMatcher.match(TEST_TASKS);
+        int expectedTasksMatchCode = TaskContentProvider.TASKS;
+        assertEquals(tasksUriDoesNotMatch, expectedTasksMatchCode, actualTasksMatchCode);
+
+        /* Test that the code returned from our matcher matches the expected TASK_WITH_ID */
+        String taskWithIdDoesNotMatch =
+                "Error: The TASK_WITH_ID URI was matched incorrectly.";
+        int actualTaskWithIdCode = testMatcher.match(TEST_TASK_WITH_ID);
+        int expectedTaskWithIdCode = TaskContentProvider.TASK_WITH_ID;
+        assertEquals(taskWithIdDoesNotMatch, expectedTaskWithIdCode, actualTaskWithIdCode);
+    }
 
 
     //================================================================================

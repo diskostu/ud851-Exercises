@@ -37,7 +37,7 @@ public class TaskContentProvider extends ContentProvider {
     private final static UriMatcher uriMatcher = buildUriMatcher();
 
     // DONE (2) Define a static buildUriMatcher method that associates URI's with their int match
-    private static UriMatcher buildUriMatcher() {
+    static UriMatcher buildUriMatcher() {
         final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(TaskContract.AUTHORITY, TaskContract.PATH_TASKS, TASKS);
