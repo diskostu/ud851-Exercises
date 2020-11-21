@@ -1,26 +1,29 @@
 /*
-* Copyright (C) 2016 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.android.todolist.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -37,9 +40,10 @@ public class TaskContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Define a static buildUriMatcher method that associates URI's with their int match
+
     /**
-     Initialize a new matcher object without any matches,
-     then use .addURI(String authority, String path, int match) to add matches
+     * Initialize a new matcher object without any matches,
+     * then use .addURI(String authority, String path, int match) to add matches
      */
     public static UriMatcher buildUriMatcher() {
 
@@ -78,16 +82,32 @@ public class TaskContentProvider extends ContentProvider {
 
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        // TODO (1) Get access to the task database (to write new data to)
+        // DONE (1) Get access to the task database (to write new data to)
+        final SQLiteDatabase database = mTaskDbHelper.getWritableDatabase();
 
-        // TODO (2) Write URI matching code to identify the match for the tasks directory
+        Uri returnUri;
 
-        // TODO (3) Insert new values into the database
-        // TODO (4) Set the value for the returnedUri and write the default case for unknown URI's
+        // DONE (2) Write URI matching code to identify the match for the tasks directory
+        if (sUriMatcher.match(uri) == TASKS) {
+            // DONE (3) Insert new values into the database
+            final long id = database.insert(TaskContract.TaskEntry.TABLE_NAME, null, values);
+            if (id > 0) {
+                // success
+                // DONE (4) Set the value for the returnedUri and write the default case for unknown URI's
+                returnUri = ContentUris.withAppendedId(TaskContract.TaskEntry.CONTENT_URI, id);
+                // should also work: returnUri = ContentUris.withAppendedId(uri, id);
+            } else {
+                throw new SQLException(String.format("Failed to insert row into %s", uri));
+            }
+        } else {
+            throw new UnsupportedOperationException(String.format("Unknown URI: %s", uri));
+        }
 
-        // TODO (5) Notify the resolver if the uri has been changed, and return the newly inserted URI
+        // DONE (5) Notify the resolver if the uri has been changed, and return the newly inserted URI
+        //noinspection ConstantConditions
+        getContext().getContentResolver().notifyChange(uri, null);
 
-        throw new UnsupportedOperationException("Not yet implemented");
+        return returnUri;
     }
 
 

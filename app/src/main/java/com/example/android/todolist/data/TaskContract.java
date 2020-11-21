@@ -45,8 +45,7 @@ public class TaskContract {
     public static final class TaskEntry implements BaseColumns {
 
         // TaskEntry content URI = base content URI + path
-        public static final Uri CONTENT_URI =
-                BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASKS).build();
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASKS).build();
 
 
         // Task table and column names
