@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
 
         // re-queries for all tasks
-        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+        LoaderManager.getInstance(this).restartLoader(TASK_LOADER_ID, null, this);
     }
 
 
