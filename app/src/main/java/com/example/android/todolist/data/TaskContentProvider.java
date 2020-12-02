@@ -1,18 +1,18 @@
 /*
-* Copyright (C) 2016 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2016 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.example.android.todolist.data;
 
@@ -41,9 +41,10 @@ public class TaskContentProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Define a static buildUriMatcher method that associates URI's with their int match
+
     /**
-     Initialize a new matcher object without any matches,
-     then use .addURI(String authority, String path, int match) to add matches
+     * Initialize a new matcher object without any matches,
+     * then use .addURI(String authority, String path, int match) to add matches
      */
     public static UriMatcher buildUriMatcher() {
 
@@ -95,7 +96,7 @@ public class TaskContentProvider extends ContentProvider {
                 // Insert new values into the database
                 // Inserting values into tasks table
                 long id = db.insert(TABLE_NAME, null, values);
-                if ( id > 0 ) {
+                if (id > 0) {
                     returnUri = ContentUris.withAppendedId(TaskContract.TaskEntry.CONTENT_URI, id);
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
@@ -120,15 +121,36 @@ public class TaskContentProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
-        // TODO (1) Get access to underlying database (read-only for query)
+        // DONE (1) Get access to underlying database (read-only for query)
+        final SQLiteDatabase database = mTaskDbHelper.getReadableDatabase();
 
-        // TODO (2) Write URI match code and set a variable to return a Cursor
+        // DONE (2) Write URI match code and set a variable to return a Cursor
+        final int match = sUriMatcher.match(uri);
 
-        // TODO (3) Query for the tasks directory and write a default case
+        // DONE (3) Query for the tasks directory and write a default case
+        Cursor retCursor;
 
-        // TODO (4) Set a notification URI on the Cursor and return that Cursor
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (match) {
+            // query for the tasks directory
+            case TASKS:
+                retCursor = database.query(TABLE_NAME,
+                                           projection,
+                                           selection,
+                                           selectionArgs,
+                                           null,
+                                           null,
+                                           sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown URI: " + uri);
+        }
 
-        throw new UnsupportedOperationException("Not yet implemented");
+
+        // DONE (4) Set a notification URI on the Cursor and return that Cursor
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
+
+        return retCursor;
     }
 
 
