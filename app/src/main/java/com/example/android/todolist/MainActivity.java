@@ -18,6 +18,7 @@ package com.example.android.todolist;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
@@ -28,7 +29,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.View;
 
 import com.example.android.todolist.data.TaskContract;
 
@@ -78,13 +78,16 @@ public class MainActivity extends AppCompatActivity implements
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 // Here is where you'll implement swipe to delete
 
-                // TODO (1) Construct the URI for the item to delete
-                //[Hint] Use getTag (from the adapter code) to get the id of the swiped item
+                // DONE (1) Construct the URI for the item to delete
+                // [Hint] Use getTag (from the adapter code) to get the id of the swiped item
+                final int id = (int) viewHolder.itemView.getTag();
+                final Uri uri = TaskContract.TaskEntry.CONTENT_URI.buildUpon().appendPath(String.valueOf(id)).build();
 
-                // TODO (2) Delete a single row of data using a ContentResolver
+                // DONE (2) Delete a single row of data using a ContentResolver
+                getContentResolver().delete(uri, null, null);
 
-                // TODO (3) Restart the loader to re-query for all tasks after a deletion
-                
+                // DONE (3) Restart the loader to re-query for all tasks after a deletion
+                getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, MainActivity.this);
             }
         }).attachToRecyclerView(mRecyclerView);
 
@@ -93,15 +96,12 @@ public class MainActivity extends AppCompatActivity implements
          Attach an OnClickListener to it, so that when it's clicked, a new intent will be created
          to launch the AddTaskActivity.
          */
-        FloatingActionButton fabButton = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fabButton = findViewById(R.id.fab);
 
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Create a new intent to start an AddTaskActivity
-                Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
-                startActivity(addTaskIntent);
-            }
+        fabButton.setOnClickListener(view -> {
+            // Create a new intent to start an AddTaskActivity
+            Intent addTaskIntent = new Intent(MainActivity.this, AddTaskActivity.class);
+            startActivity(addTaskIntent);
         });
 
         /*
